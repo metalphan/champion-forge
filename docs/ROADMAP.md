@@ -18,11 +18,11 @@ Everything a player needs for a full run:
 **Goal:** Playable on any Android device without an app store. Installable from the browser.
 
 ### Tasks
-- [ ] `public/manifest.json` — name, icons, theme color, display mode
-- [ ] `src/app/layout.tsx` — add `<link rel="manifest">`, `theme-color` meta, `apple-touch-icon`
-- [ ] `public/icons/` — generate icon set at 192×192 and 512×512
+- [x] `public/manifest.json` — name, icons, theme color, display mode
+- [x] `src/app/layout.tsx` — `<link rel="manifest">`, `theme-color` meta, `apple-touch-icon`
+- [x] `next.config.ts` — security headers (X-Frame-Options, CSP, etc.)
+- [ ] `public/icons/` — generate icon set at 192×192 and 512×512 ← **BLOCKING**
 - [ ] Service worker via `next-pwa` or hand-rolled — offline caching of shell
-- [ ] `next.config.ts` — security headers (X-Frame-Options, CSP, etc.)
 - [ ] Deploy to Vercel — public URL, HTTPS (required for PWA install prompt)
 
 **Outcome:** Player opens `champion-forge.vercel.app` on Android → browser prompts "Add to Home Screen" → app icon on phone, launches fullscreen.
@@ -50,26 +50,33 @@ Everything a player needs for a full run:
 
 ---
 
-## Phase 3 — AI Art Pipeline
+## Phase 3 — AI Art Pipeline ✅ Tier 2 Complete / 🔄 Tier 3 In Progress
 
-**Goal:** Each champion archetype has a generated portrait. Visual fidelity goes from Tier 1 → Tier 2.
+**Goal:** Each champion archetype has a generated portrait. Visual fidelity goes from Tier 1 → Tier 2 → Tier 3 (multi-view).
 
-### Tasks
-- [ ] `scripts/generate-art.ts` — calls fal.ai Flux API, saves PNGs to `public/champions/`
-- [ ] Add `imageUrl` field to `Champion` type
-- [ ] Update `ChampionCard.tsx` — render portrait as background image behind stat overlay
-- [ ] Define ~20 stable champion archetypes with name, affinity, rarity, portrait prompt
-- [ ] Run generation script once; commit images to repo (or store in Supabase Storage)
-- [ ] Style guide prompt: `"fantasy RPG card art, dark painterly style, character portrait, [affinity] warrior, black gradient background, game card illustration"`
+### Completed
+- [x] `scripts/generate-art.ts` — fal.ai Flux Pro Ultra, saves PNGs to `public/champions/`
+- [x] 16 champion archetypes defined (4 affinities × 4 rarities), portraits generated
+- [x] `ChampionCard.tsx` Tier 2 — portrait as background + gradient overlay + stats panel
+- [x] Images committed to repo; idempotent script skips existing files
+- [x] Art direction forked into two branches: `portraits/standard` and `portraits/suggestive`
+
+### In Progress (portraits/suggestive)
+- [x] `scripts/generate-previews.ts` — 4-angle preview system (front, left ¾, right ¾, back)
+- [ ] User approval of Pyrewing 4-angle previews
+- [ ] Full 16-champion × 4-view batch generation (~$3.84)
+- [ ] Wire multi-view portraits into game UI (how/when side and back views are shown)
 
 ### fal.ai Setup
 ```bash
 npm install @fal-ai/client
 # Add FAL_KEY=your_key to .env.local
-npm run generate-art
+npm run generate-art       # regenerate all 16 portraits
+npm run generate-previews  # 4-angle preview for one champion
 ```
 
-**Outcome:** Draft screen shows illustrated champion cards instead of gradient placeholders.
+**Outcome:** Draft screen shows illustrated champion cards. Multi-view portraits usable in
+champion detail screens, combat animations, and reward reveals.
 
 ---
 

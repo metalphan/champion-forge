@@ -30,7 +30,9 @@ _Last updated: 2026-06-20 (session 4 — portrait art direction fork)_
 | Game over / retry | ✅ Working | Retry Floor (squad swap) or Abandon Run |
 | Victory screen | ✅ Working | Shows zone, floor, Shards earned |
 | Meta perk shop | ✅ Working | 5 perks, currency persistence in localStorage |
-| AI portraits | ✅ On main | 16 PNGs in `public/champions/`, wired to ChampionCard |
+| AI portraits (Flux Schnell) | ✅ On main | 16 PNGs in `public/champions/`, wired to ChampionCard |
+| AI portraits (Flux Pro Ultra) | 🔄 Branch | `feat/portrait-upgrade` (PR #4 open) — upgraded quality, more revealing designs |
+| 4-view portrait system | 🔄 Branch | `portraits/suggestive` — generate-previews.ts, Pyrewing preview awaiting approval |
 | ChampionCard Tier 2 | ✅ On main | Portrait + gradient overlay + stats panel |
 | PWA manifest | ✅ On main | `public/manifest.json` — active once deployed to Vercel |
 | Security headers | ✅ On main | `next.config.ts` — active once deployed to Vercel |
@@ -152,6 +154,6 @@ _Last updated: 2026-06-20 (session 4 — portrait art direction fork)_
 
 1. Read `AGENTS.md` and this file first
 2. Run `npm test` — confirm 48/48 before touching anything
-3. No open PRs — work directly off `main` via a new feature branch
-4. First real task: generate PWA icons, then `vercel --prod`
+3. Active branches: `portraits/suggestive` (explicit art), `portraits/standard` (tasteful), `feat/portrait-upgrade` (PR #4 open)
+4. First real task: approve or adjust Pyrewing previews → run full 16-champion batch on `portraits/suggestive`
 5. After your session: update this file's "Last updated" date and add to "Recent changes"

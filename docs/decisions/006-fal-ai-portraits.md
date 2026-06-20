@@ -1,6 +1,6 @@
 # ADR-006: fal.ai Flux for AI-Generated Champion Portraits
 
-**Status:** Accepted  
+**Status:** Accepted (updated 2026-06-20 — model upgraded to Flux Pro Ultra)  
 **Date:** 2026-06-20
 
 ## Context and Problem Statement
@@ -20,8 +20,9 @@ with no art budget needs to reach Tier 2 visuals without a human artist.
 
 ## Considered Options
 
-1. **fal.ai Flux Schnell via API** (chosen)
-2. **DALL-E 3 (OpenAI)** — high quality, consistent, but ~$0.04/image vs $0.003/image
+1. **fal.ai Flux Schnell via API** (initial choice — superseded)
+2. **fal.ai Flux Pro Ultra via API** (current choice — upgraded 2026-06-20)
+3. **DALL-E 3 (OpenAI)** — high quality, consistent, but ~$0.04/image vs $0.06/image
 3. **Midjourney** — arguably the best quality, but no API; requires Discord interaction
 4. **Replicate (SDXL / Flux)** — similar to fal.ai, slightly higher per-call overhead
 5. **Stable Diffusion locally (ComfyUI)** — free after setup, but requires a capable GPU
@@ -29,46 +30,62 @@ with no art budget needs to reach Tier 2 visuals without a human artist.
 
 ## Decision Outcome
 
-**Chosen option: fal.ai Flux Schnell** — because it has the best cost/quality ratio at
-~$0.003/image, a clean JavaScript SDK (`@fal-ai/client`), fast inference (~2 seconds
-per image), and Flux's outputs have the dark painterly RPG aesthetic needed for the game.
+**Current model: fal.ai Flux Pro Ultra** (`fal-ai/flux-pro/v1.1-ultra`) — upgraded from
+Flux Schnell on 2026-06-20. Reason: significantly higher image quality and character fidelity
+needed for the RAID Shadow Legends-style aesthetic; the cost increase ($0.003 → ~$0.06/image)
+is acceptable for a one-time generation of a fixed portrait set.
 
 The generation script (`scripts/generate-art.ts`) is idempotent — it skips already-
 generated files — so re-running it only generates missing portraits.
 
-### Style guide prompt
+### Art direction branches
+
+Two long-lived branches exist for different content policies:
+
+| Branch | Target | `safety_tolerance` | Style |
+|--------|--------|--------------------|-------|
+| `portraits/standard` | General audience / app stores | `"5"` | Tasteful fantasy costumes |
+| `portraits/suggestive` | Adult / direct distribution | `"6"` | Revealing, titillating designs |
+
+### 4-view preview system
+
+`scripts/generate-previews.ts` generates 4 angles of a single champion (front, left ¾,
+right ¾, back) before committing to the full batch. This gate prevents costly regeneration
+of all 16 champions if the art direction needs adjustment.
+
+**Key consistency technique**: use ¾ angles rather than strict side profiles. Strict side
+profile causes Flux to render the character's creature aspect (dragon snout, etc.) rather
+than the human face. ¾ angles with "face turned toward viewer" keep the human face visible
+across all shots.
+
+### Style guide (current)
 
 ```
-fantasy RPG card art, dark painterly style, dramatic lighting,
-character portrait, black gradient background, game card illustration,
-high detail, cinematic, no text, no border
+beautiful human woman, [affinity-specific features],
+fantasy RPG card art, cinematic digital painting, dramatic lighting,
+dark atmospheric background, no text, no border, no watermark
 ```
 
-Affinity-specific additions:
-- Fire: `fire elemental warrior, red and orange flames, molten armor, ember glow`
-- Water: `water elemental mage, blue and cyan ice crystals, flowing robes, frost aura`
-- Earth: `earth elemental guardian, stone armor, green vines, nature magic`
-- Lightning: `lightning elemental striker, purple and yellow electricity, storm energy`
+Affinity-specific: dragon wings + fire (Fire), sea scales + bioluminescence (Water),
+bark skin + vines (Earth), electric tattoos + storm energy (Lightning).
 
 ### Consequences
 
 **Positive:**
-- $0.05 total for 16 portraits — trivially cheap to regenerate
-- Fast: full set generates in ~5 minutes
-- Consistent style achievable by anchoring all prompts to the same style guide
-- Images committed to repo — no API dependency at runtime, works offline
+- ~$0.96 total for 16 portraits — still cheap to regenerate
+- Significantly better character fidelity vs Schnell
 - Idempotent script: safe to re-run; skips existing files
+- Images committed to repo — no API dependency at runtime, works offline
+- 4-view preview gate prevents wasted full-batch runs
 
 **Negative:**
-- Generated images are static archetypes — all Fire Commons look identical
-  regardless of their procedurally generated name and stats
-- Requires `FAL_KEY` and account balance to regenerate (though ~$0.05 per full run)
-- Flux can generate inconsistent anatomy on complex compositions
+- ~$0.06/image vs $0.003 for Schnell — 20× more expensive
+- Flux generates each image independently — no character memory across calls;
+  consistency across 4 views requires careful prompt engineering (¾ angles, face anchors)
+- Requires `FAL_KEY` and account balance; full 16×4 batch = ~$3.84
 - fal.ai is a startup — API stability and pricing are not guaranteed long-term
 
 **Neutral:**
 - Uncommon rarity reuses Common portraits (4 portraits per affinity, 5 rarities)
-  because generating 5 per affinity (20 total) was not enough visual differentiation
-  to justify the cost
-- When a persistent champion collection is added (Phase 3), unique portraits for
-  named champions should be generated on-demand or pre-generated for a fixed roster
+- Multi-view portraits (4 angles per champion) are on `portraits/suggestive` branch;
+  `portraits/standard` currently uses single-view portraits only
