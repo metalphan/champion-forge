@@ -1,7 +1,7 @@
 # Champion Forge — Handoff & Current State
 
 _Read this alongside `AGENTS.md` at the start of every new session._
-_Last updated: 2026-06-20 (session 2)_
+_Last updated: 2026-06-19 (session 3 — session-end update)_
 
 ---
 
@@ -12,7 +12,7 @@ _Last updated: 2026-06-20 (session 2)_
 | `package.json` version | `0.1.0` |
 | GitHub repo | https://github.com/metalphan/champion-forge |
 | Deployed URL | Not yet deployed |
-| Next version | `0.2.0` (after Vercel deploy + PWA) |
+| Next version | `0.2.0` (after Vercel deploy + PWA icons) |
 
 ---
 
@@ -30,11 +30,13 @@ _Last updated: 2026-06-20 (session 2)_
 | Game over / retry | ✅ Working | Retry Floor (squad swap) or Abandon Run |
 | Victory screen | ✅ Working | Shows zone, floor, Shards earned |
 | Meta perk shop | ✅ Working | 5 perks, currency persistence in localStorage |
-| AI portraits | ✅ Complete | 16 PNGs generated via fal.ai Flux, wired to ChampionCard |
-| ChampionCard Tier 2 | ✅ Complete | Portrait + gradient overlay + stats panel |
-| PWA manifest | ✅ In code | `public/manifest.json` — not live until Vercel deploy |
-| Security headers | ✅ In code | `next.config.ts` — not live until Vercel deploy |
+| AI portraits | ✅ On main | 16 PNGs in `public/champions/`, wired to ChampionCard |
+| ChampionCard Tier 2 | ✅ On main | Portrait + gradient overlay + stats panel |
+| PWA manifest | ✅ On main | `public/manifest.json` — active once deployed to Vercel |
+| Security headers | ✅ On main | `next.config.ts` — active once deployed to Vercel |
 | Vitest suite | ✅ 48/48 passing | Engine + data coverage at 80%+ threshold |
+| Engineering docs | ✅ On main | ADRs, DoD, PR template, Runbook, Schema, .env.example |
+| PWA icons | ❌ Missing | manifest.json references `/icons/192.png` + `/icons/512.png` — files don't exist yet |
 | Vercel deploy | ❌ Not done | Phase 1 |
 | Supabase integration | ❌ Not done | Phase 1 |
 | Capacitor APK | ❌ Not done | Phase 4 |
@@ -44,55 +46,48 @@ _Last updated: 2026-06-20 (session 2)_
 
 ## Recent changes
 
+### 2026-06-19 (session 3) — Cross-tool AI workflow + session close
+
+- **`/pm-init` and `/pm-review` skills** deployed to all four AI coding tools:
+  Claude Code, Cursor, Antigravity, and Codex
+- **Master sync system** created at `~/.ai-rules/` — one source of truth for PM
+  workflow skills, propagated via `~/.ai-rules/sync.ps1`
+- **Propagation rules** added to every tool's config (CLAUDE.md, Cursor `.mdc` rule,
+  Antigravity skill, Codex `instructions.md`) — any AI in any tool knows to edit
+  the master and run sync.ps1, never the tool-specific copies
+- **PR #2 merged** — portraits, Tier 2 ChampionCard, PWA manifest, security headers,
+  AGENTS.md, all engineering docs now on `main`
+- Resolved all "not on main yet" known issues from session 2
+
 ### 2026-06-20 (session 2) — Engineering standards: ADRs, DoD, PR template, Runbook, Schema, .env.example
 
-- **7 ADRs** written in `docs/decisions/` covering all major decisions to date:
-  Next.js, Zustand, phased persistence, auto-battle, Mulberry32 PRNG, fal.ai portraits, no-permadeath
-- **Definition of Done** added to `AGENTS.md` — explicit checklist with code quality,
-  testing, documentation, security, UI, and PR criteria
-- **PR Template** at `.github/PULL_REQUEST_TEMPLATE.md` — auto-populates every PR with
-  type-of-change, test plan, DoD checklist, security, screenshots section
-- **Runbook** at `docs/RUNBOOK.md` — 10 step-by-step operational procedures:
-  dev setup, daily dev, tests, art generation, Vercel deploy, rollback, PR workflow,
-  DB migrations, secret rotation, troubleshooting table
-- **Schema doc** at `docs/SCHEMA.md` — MetaState (localStorage), RunState (in-memory),
-  planned Supabase tables (profiles + runs) with RLS policy intent, field glossary,
-  perk/zone ID reference tables, migration conventions
-- **`.env.example`** committed — placeholder values for all env vars with comments
-  explaining where to find real values; references 12factor.net config principles
+- **7 ADRs** in `docs/decisions/`: Next.js, Zustand, phased persistence, auto-battle,
+  Mulberry32 PRNG, fal.ai portraits, no-permadeath
+- **Definition of Done** added to `AGENTS.md`
+- **PR Template** at `.github/PULL_REQUEST_TEMPLATE.md`
+- **Runbook** at `docs/RUNBOOK.md` — 10 step-by-step procedures
+- **Schema doc** at `docs/SCHEMA.md`
+- **`.env.example`** committed with placeholder values
 
 ### 2026-06-20 — AI portraits + Tier 2 ChampionCard + docs
 
-- **16 AI portraits** generated via fal.ai Flux Schnell (`scripts/generate-art.ts`)
-  — 4 affinities × 4 rarities, saved to `public/champions/`
-- **ChampionCard** upgraded to Tier 2: 3:4 portrait with gradient name overlay,
-  dark stats panel below, compact mode with 40×40 thumbnail
-- **AGENTS.md** fully rewritten with mandatory session-end documentation rule,
-  standing PR permission, semver rules, key file index, all commands
-- **docs/handoff.md** created (this file) as living current-state document
-- **docs/** folder: ARCHITECTURE, GAME_DESIGN, TESTING, CHANGELOG, ROADMAP
-- **PWA manifest** + Viewport export + security headers added (take effect on deploy)
-- **Art generation script** wired up: `npm run generate-art` (needs `FAL_KEY` in `.env.local`)
-- fal.ai key stored in `.env.local` (git-ignored); $10 balance added, ~$0.05 used
+- 16 AI portraits via fal.ai Flux Schnell (`scripts/generate-art.ts`)
+- ChampionCard Tier 2: 3:4 portrait, gradient name overlay, dark stats panel
+- AGENTS.md, handoff.md, ARCHITECTURE, GAME_DESIGN, TESTING, CHANGELOG, ROADMAP
+- PWA manifest, Viewport export, security headers
 
 ### 2026-06-19 — Full game loop + test suite (PR #1, merged)
 
 - Complete roguelike loop: zone select → draft → combat → reward → retry/advance
-- 4 dungeon zones with dominant affinity bias and stat modifiers
-- Auto-battle engine: status effects (burn, poison, freeze, stun), counter-affinity,
-  synergy bonuses, 24-ability pool biased by affinity
-- Tier 1 visuals: affinity gradient cards, rarity glow, floor tracker, perk shop
-- Zustand store with full game phase state machine
-- localStorage persistence
+- 4 dungeon zones, auto-battle engine, status effects, synergy bonuses
+- Tier 1 visuals, Zustand FSM, localStorage persistence
 - Vitest: 48 tests, 80% engine coverage threshold
 
 ---
 
 ## Open PRs / branches
 
-| Branch | PR | Description | Status |
-|--------|----|-------------|--------|
-| `chore/docs-and-agents` | #2 (pending) | Docs, AGENTS.md, portraits, handoff | In progress |
+None. `main` is fully current as of this session.
 
 ---
 
@@ -101,22 +96,23 @@ _Last updated: 2026-06-20 (session 2)_
 - **Nested button HTML warning**: RewardScreen wraps a `<button>` around a ChampionCard
   that sometimes renders as `<button>`. The `Tag = onClick ? "button" : "div"` fix is in
   place but there may still be hydration warnings in dev mode. Not broken, just noisy.
-- **fal.ai rate limiting**: The art generator gets intermittent 403s even with a balance —
-  just run `npm run generate-art` again; it skips already-generated files.
-- **Portraits not on main yet**: The portrait commit (bb9c0f7) was pushed after PR #1 merged.
-  It will land in main when PR #2 merges.
-- **`tsconfig.json` and `next.config.ts` reverted on main**: The scripts exclusion and
-  security headers are on this branch (`chore/docs-and-agents`), not yet on main.
+- **fal.ai rate limiting**: Art generator gets intermittent 403s — re-run `npm run generate-art`,
+  it skips already-generated files.
+- **PWA icons missing**: `public/manifest.json` references `/icons/192.png` and `/icons/512.png`
+  — these files don't exist yet. PWA install will fail until they're generated.
 
 ---
 
 ## Next steps (prioritized)
 
-1. **Merge PR #2** — gets portraits, docs, security headers, PWA manifest, and AGENTS.md into main
-2. **Vercel deploy** — push main → `vercel --prod`; makes the game publicly accessible and activates PWA
-3. **PWA icons** — generate 192×192 and 512×512 icons in `public/icons/` (currently placeholders in manifest)
-4. **Supabase wiring** — create project, schema (profiles + runs), RLS, auth, replace localStorage
-5. **Capacitor APK** — wrap the web app for Android Play Store / sideload
+1. **PWA icons** — generate 192×192 and 512×512 PNGs in `public/icons/`
+   (use a champion portrait crop or a custom logo; required before Vercel deploy activates PWA)
+2. **Vercel deploy** — `vercel --prod` from main; makes the game publicly accessible,
+   activates PWA manifest and security headers
+3. **Supabase wiring** — create project, schema (`profiles` + `runs` tables per `docs/SCHEMA.md`),
+   RLS policies, Supabase Auth, replace localStorage with cloud save
+4. **Capacitor APK** — wrap the Vercel-deployed web app for Android (Phase 4)
+5. **WinUI / Electron** — desktop wrapper if desired alongside the APK (Phase 4)
 
 ---
 
@@ -125,16 +121,17 @@ _Last updated: 2026-06-20 (session 2)_
 | Secret | Where | Notes |
 |--------|-------|-------|
 | `FAL_KEY` | `.env.local` (git-ignored) | fal.ai API key for art generation |
-| Supabase URL + anon key | Not yet created | Phase 1 |
-| Vercel | Not yet configured | Phase 1 |
+| Supabase URL + anon key | Not yet created | Phase 1 — create at supabase.com |
+| Vercel | Not yet configured | Phase 1 — `vercel link` then `vercel --prod` |
 
-**Accounts everything depends on:** GitHub `metalphan` · fal.ai `metalphan@gmail.com`
+**Accounts:** GitHub `metalphan` · fal.ai `metalphan@gmail.com`
 
 ---
 
 ## For the next AI session
 
 1. Read `AGENTS.md` and this file first
-2. Check open PRs: `gh pr list --repo metalphan/champion-forge`
-3. Run `npm test` to confirm 48/48 still pass before making any changes
-4. After your session: update this file's "Last updated" date and add to "Recent changes"
+2. Run `npm test` — confirm 48/48 before touching anything
+3. No open PRs — work directly off `main` via a new feature branch
+4. First real task: generate PWA icons, then `vercel --prod`
+5. After your session: update this file's "Last updated" date and add to "Recent changes"
