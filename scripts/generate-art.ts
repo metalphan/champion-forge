@@ -10,7 +10,7 @@
  * After running, set imageUrl on champion archetypes in src/data/archetypes.ts
  */
 
-import * as fal from "@fal-ai/client";
+import { fal } from "@fal-ai/client";
 import * as fs from "fs";
 import * as path from "path";
 import * as https from "https";
@@ -113,9 +113,10 @@ async function generatePortrait(archetype: Archetype): Promise<void> {
       num_images: 1,
       num_inference_steps: 4,
     },
-  }) as { images: Array<{ url: string }> };
+  });
 
-  const imageUrl = result.images[0].url;
+  const data = result.data as { images: Array<{ url: string }> };
+  const imageUrl = data.images[0].url;
   await downloadImage(imageUrl, outputPath);
   console.log(`  ✅ Saved ${archetype.id}.png`);
 }
