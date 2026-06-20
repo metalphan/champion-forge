@@ -207,3 +207,16 @@ export const AFFINITY_BG: Record<Affinity, string> = {
   Earth:     "bg-gradient-to-br from-green-950/50 to-lime-950/20",
   Lightning: "bg-gradient-to-br from-yellow-950/50 to-amber-950/20",
 };
+
+// Maps affinity + rarity to the generated portrait in /public/champions/
+// Uncommon reuses the Common portrait since we only generated 4 per affinity.
+const PORTRAIT_SLUG: Record<Affinity, Record<Rarity, string>> = {
+  Fire:      { Common:"fire-common-warrior", Uncommon:"fire-common-warrior", Rare:"fire-rare-knight",     Epic:"fire-epic-dragon",     Legendary:"fire-legendary-phoenix" },
+  Water:     { Common:"water-common-mage",   Uncommon:"water-common-mage",   Rare:"water-rare-knight",    Epic:"water-epic-siren",     Legendary:"water-legendary-kraken" },
+  Earth:     { Common:"earth-common-druid",  Uncommon:"earth-common-druid",  Rare:"earth-rare-golem",     Epic:"earth-epic-treant",    Legendary:"earth-legendary-gaia"   },
+  Lightning: { Common:"lightning-common-scout", Uncommon:"lightning-common-scout", Rare:"lightning-rare-duelist", Epic:"lightning-epic-storm", Legendary:"lightning-legendary-zeus" },
+};
+
+export function getPortraitUrl(affinity: Affinity, rarity: Rarity): string {
+  return `/champions/${PORTRAIT_SLUG[affinity][rarity]}.png`;
+}

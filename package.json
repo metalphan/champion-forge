@@ -10,12 +10,14 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "generate-art": "tsx scripts/generate-art.ts"
+    "generate-art": "node --env-file=.env.local --import=tsx/esm scripts/generate-art.ts"
   },
   "dependencies": {
+    "@fal-ai/client": "^1.10.1",
     "next": "16.2.9",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "tsx": "^4.22.4",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
