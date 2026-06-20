@@ -1,7 +1,7 @@
 # Champion Forge — Handoff & Current State
 
 _Read this alongside `AGENTS.md` at the start of every new session._
-_Last updated: 2026-06-20_
+_Last updated: 2026-06-20 (session 2)_
 
 ---
 
@@ -43,6 +43,23 @@ _Last updated: 2026-06-20_
 ---
 
 ## Recent changes
+
+### 2026-06-20 (session 2) — Engineering standards: ADRs, DoD, PR template, Runbook, Schema, .env.example
+
+- **7 ADRs** written in `docs/decisions/` covering all major decisions to date:
+  Next.js, Zustand, phased persistence, auto-battle, Mulberry32 PRNG, fal.ai portraits, no-permadeath
+- **Definition of Done** added to `AGENTS.md` — explicit checklist with code quality,
+  testing, documentation, security, UI, and PR criteria
+- **PR Template** at `.github/PULL_REQUEST_TEMPLATE.md` — auto-populates every PR with
+  type-of-change, test plan, DoD checklist, security, screenshots section
+- **Runbook** at `docs/RUNBOOK.md` — 10 step-by-step operational procedures:
+  dev setup, daily dev, tests, art generation, Vercel deploy, rollback, PR workflow,
+  DB migrations, secret rotation, troubleshooting table
+- **Schema doc** at `docs/SCHEMA.md` — MetaState (localStorage), RunState (in-memory),
+  planned Supabase tables (profiles + runs) with RLS policy intent, field glossary,
+  perk/zone ID reference tables, migration conventions
+- **`.env.example`** committed — placeholder values for all env vars with comments
+  explaining where to find real values; references 12factor.net config principles
 
 ### 2026-06-20 — AI portraits + Tier 2 ChampionCard + docs
 

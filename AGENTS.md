@@ -126,6 +126,50 @@ Update `package.json` version before committing significant feature work.
 
 ---
 
+## ✅ Definition of Done
+
+A feature is **Done** — not "code complete," not "seems to work" — only when every
+box below is checked. This prevents technical debt from silently accumulating.
+
+*Rooted in the Scrum Alliance DoD standard, Martin Fowler's "DonedoneDone" principle,
+and the Joel Test's emphasis on explicit shared quality standards.*
+
+### Code quality
+- [ ] `npx tsc --noEmit` passes with zero errors
+- [ ] `npm test` — all tests pass; no skipped or `todo` tests
+- [ ] `npm run lint` — zero ESLint errors
+- [ ] No new `any` types or `@ts-ignore` added without a comment explaining why
+- [ ] No `console.error` / `console.warn` in normal (non-error) code paths
+
+### Testing
+- [ ] New engine/data logic has unit tests in a co-located `*.test.ts` file
+- [ ] Coverage thresholds maintained (`npm run test:coverage` — 80% engine, 60% UI)
+- [ ] At least one negative/edge-case test per new function, not just the happy path
+
+### Documentation
+- [ ] `docs/handoff.md` updated — date + "Recent changes" entry
+- [ ] `docs/CHANGELOG.md` updated if the change is user-facing
+- [ ] New ADR in `docs/decisions/` if an architectural decision was made
+- [ ] Inline comment added for any non-obvious logic (explain the WHY, not the WHAT)
+
+### Security
+- [ ] No secrets, API keys, tokens, or passwords in any committed file
+- [ ] User inputs validated if any new inputs were added
+- [ ] No `eval()`, `dangerouslySetInnerHTML`, or dynamic `require()` without review
+
+### UI changes (skip if no UI changed)
+- [ ] Golden path manually verified at http://localhost:3000
+- [ ] No new errors in browser DevTools console
+- [ ] Tested at 375px width (iPhone SE — smallest common viewport)
+- [ ] Screenshot or recording attached to the PR
+
+### PR
+- [ ] PR title follows conventional commits (`feat:`, `fix:`, `chore:`, `test:`, etc.)
+- [ ] PR description explains WHY, not just WHAT (the diff already shows WHAT)
+- [ ] PR template checklist filled out (`.github/PULL_REQUEST_TEMPLATE.md`)
+
+---
+
 ## 🔴 Mandatory documentation rule
 
 **After every session where anything changed — code, config, or design decisions — you must:**
