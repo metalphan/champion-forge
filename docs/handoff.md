@@ -1,7 +1,7 @@
 # Champion Forge — Handoff & Current State
 
 _Read this alongside `AGENTS.md` at the start of every new session._
-_Last updated: 2026-06-19 (session 3 — session-end update)_
+_Last updated: 2026-06-20 (session 4 — portrait art direction fork)_
 
 ---
 
@@ -46,6 +46,20 @@ _Last updated: 2026-06-19 (session 3 — session-end update)_
 
 ## Recent changes
 
+### 2026-06-20 (session 4) — Portrait art direction fork
+
+- **Two long-lived art branches created:**
+  - `portraits/standard` — branched from `main`; original Flux Schnell portraits, tasteful designs
+  - `portraits/suggestive` — branched from `feat/portrait-upgrade`; Flux Pro Ultra, explicit/revealing designs
+- **`scripts/generate-previews.ts`** — new script generating 4 views of one champion
+  (front, left ¾, right ¾, back) as approval preview before committing to full 16×4 run
+- **Pyrewing 4-view preview generated** (v4, awaiting approval) in `public/champions/previews/`
+  - Consistency fix: ¾ angles instead of strict side profile; face anchored as human woman
+  - Auburn-red hair locked across all 4 views
+  - More revealing/titillating poses and coverage per user direction
+- **`feat/portrait-upgrade` PR (#4)** — still open; Flux Pro Ultra upgrade for all 16 champions
+- User has NOT yet approved Pyrewing previews for full batch generation
+
 ### 2026-06-19 (session 3) — Cross-tool AI workflow + session close
 
 - **`/pm-init` and `/pm-review` skills** deployed to all four AI coding tools:
@@ -87,7 +101,11 @@ _Last updated: 2026-06-19 (session 3 — session-end update)_
 
 ## Open PRs / branches
 
-None. `main` is fully current as of this session.
+| Branch | Status | Notes |
+|--------|--------|-------|
+| `feat/portrait-upgrade` | Open (PR #4) | Flux Pro Ultra upgrade for all 16 champions; not yet merged |
+| `portraits/standard` | Long-lived | Art direction branch — tasteful/general audience |
+| `portraits/suggestive` | Long-lived | Art direction branch — explicit/revealing; awaiting Pyrewing approval |
 
 ---
 
@@ -105,7 +123,9 @@ None. `main` is fully current as of this session.
 
 ## Next steps (prioritized)
 
-1. **PWA icons** — generate 192×192 and 512×512 PNGs in `public/icons/`
+1. **Approve Pyrewing previews** — view `public/champions/previews/` (4 views), confirm direction,
+   then run `npm run generate-art` on `portraits/suggestive` for full 16×4 batch (~$3.84)
+2. **PWA icons** — generate 192×192 and 512×512 PNGs in `public/icons/`
    (use a champion portrait crop or a custom logo; required before Vercel deploy activates PWA)
 2. **Vercel deploy** — `vercel --prod` from main; makes the game publicly accessible,
    activates PWA manifest and security headers
